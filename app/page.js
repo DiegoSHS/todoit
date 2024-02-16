@@ -1,15 +1,18 @@
 'use client'
 
-import { useState } from "react"
+import { StoredContext } from "@/context"
+import { CircularProgress } from "@nextui-org/react"
+import { useEffect, useState } from "react"
 import toast from "react-hot-toast"
-
+import { TodoList } from "@/components/todo"
+import { getTodos } from "@/database"
 export default function Index() {
     const [loading, setLoading] = useState(true)
     const { memory: { todos }, setStored } = StoredContext()
-    const loadTodos = (promise) => {
-        promise.then(({data,error})=>{
-            if (error){
-                toast.error('No se pudieron cargar las tareas',{
+    const loader = (promise) => {
+        promise.then(({ data, error }) => {
+            if (error) {
+                toast.error('No se pudieron cargar las tareas', {
                     duration: 4000,
                     icon: '❌'
                 })
@@ -20,10 +23,15 @@ export default function Index() {
             setLoading(false)
         })
     }
-    
+    const setupTodos = async () => {
+        loader(getTodos('todos'))
+    }
+    useEffect(() => {
+        setupTodos()
+    }, [])
     return (
         <div>
-
+            {loading ? <CircularProgress size="lg"></CircularProgress> : <TodoList todos={todos} />}
         </div>
     )
 }
