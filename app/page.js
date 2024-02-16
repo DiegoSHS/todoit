@@ -10,10 +10,12 @@ export default function Index() {
     const [loading, setLoading] = useState(true)
     const { memory: { todos }, setStored } = StoredContext()
     const loader = (promise) => {
+        setLoading(true)
         promise.then(({ data, error }) => {
             if (error) {
-                toast.error('No se pudieron cargar las tareas', {
-                    duration: 4000,
+                toast.error('No se pudieron obtener las tareas', {
+                    id: 'load-error',
+                    duration: 3000,
                     icon: '❌'
                 })
                 setLoading(false)
@@ -30,8 +32,8 @@ export default function Index() {
         setupTodos()
     }, [])
     return (
-        <div>
-            {loading ? <CircularProgress size="lg"></CircularProgress> : <TodoList todos={todos} />}
-        </div>
+        <>
+            {loading ? <CircularProgress size="lg" /> : <TodoList todos={todos} />}
+        </>
     )
 }

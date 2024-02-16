@@ -20,16 +20,16 @@ export default function RootLayout({
 }) {
   return (
     <MemoryProvider>
-      <UIProvider>
-        <html lang="en" className={GeistSans.className}>
-          <body className="bg-background text-foreground">
-            <Notify />
+      <html lang="en" className={GeistSans.className}>
+        <body className="bg-background text-foreground">
+          <Notify />
+          <UIProvider>
             <main className="min-h-screen flex flex-col items-center">
               {children}
             </main>
-          </body>
-        </html>
-      </UIProvider>
+          </UIProvider>
+        </body>
+      </html>
     </MemoryProvider>
   )
 }

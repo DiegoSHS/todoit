@@ -6,7 +6,7 @@ const cookieStore = cookies()
 const client = createClient(cookieStore)
 
 export const deleteTodo = async (id, table, supabase = client) => {
-    const { count } = await supabase.from(table).delete().match({ id })
+    const { count } = await supabase.from(table).select().match({ id })
     if (count === 0) {
         return {
             error: {
@@ -18,63 +18,23 @@ export const deleteTodo = async (id, table, supabase = client) => {
 }
 
 export const getTodos = async (table, supabase = client) => {
-    const { data, error } = await supabase.from(table).select('*')
-    if (error) {
-        return {
-            error: {
-                message: 'No se pudieron cargar las tareas'
-            }
-        }
-    }
-    return { data }
+    return supabase.from(table).select('*')
 }
 
 export const insertTodo = async (todo, table, supabase = client) => {
-    const { data, error } = await supabase.from(table).insert(todo)
-    if (error) {
-        return {
-            error: {
-                message: 'No se pudo agregar la tarea'
-            }
-        }
-    }
-    return { data }
+    return supabase.from(table).insert(todo)
 }
 
 export const updateTodo = async (id, todo, table, supabase = client) => {
-    const { data, error } = await supabase.from(table).update(todo).match({ id })
-    if (error) {
-        return {
-            error: {
-                message: 'No se pudo actualizar la tarea'
-            }
-        }
-    }
-    return { data }
+    return supabase.from(table).update(todo).match({ id })
 }
 
 export const getDoneTodos = async (table, supabase = client) => {
-    const { data, error } = await supabase.from(table).select('*').eq('done', true)
-    if (error) {
-        return {
-            error: {
-                message: 'No se pudieron cargar las tareas'
-            }
-        }
-    }
-    return { data }
+    return supabase.from(table).select('*').eq('done', true)
 }
 
 export const getPendingTodos = async (table, supabase = client) => {
-    const { data, error } = await supabase.from(table).select('*').eq('done', false)
-    if (error) {
-        return {
-            error: {
-                message: 'No se pudieron cargar las tareas'
-            }
-        }
-    }
-    return { data }
+    return supabase.from(table).select('*').eq('done', false)
 }
 
 export const getTodosByTextSearch = async (table, text, supabase = client) => {
