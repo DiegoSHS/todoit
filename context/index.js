@@ -1,6 +1,5 @@
 'use client'
-import { getTodos } from "@/database"
-import { useContext, createContext, useState, useEffect } from "react"
+import { useContext, createContext, useState } from "react"
 
 export const defaultTodo = {
     title: "",
@@ -21,10 +20,6 @@ export const MemoryProvider = ({ children }) => {
         validForm: false,
         newTodo: defaultTodo,
     })
-    useEffect(() => {
-        const { data, error } = getTodos('todos')
-        setStored({ todos: data })
-    }, [])
     const setStored = (prop) => setMemory((prev) => ({ ...prev, ...prop }))
     const ctx = { memory, setStored }
     return <Context.Provider value={ctx}>{children}</Context.Provider>

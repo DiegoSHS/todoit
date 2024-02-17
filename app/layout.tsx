@@ -21,9 +21,9 @@ export default function RootLayout({
   return (
     <MemoryProvider>
       <html lang="en" className={GeistSans.className}>
-        <body className="bg-background text-foreground">
-          <Notify />
+        <body className="dark bg-background text-foreground">
           <UIProvider>
+          <Notify />
             <main className="min-h-screen flex flex-col items-center">
               {children}
             </main>
