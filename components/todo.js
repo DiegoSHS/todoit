@@ -1,7 +1,7 @@
-import { Button, Card, CardBody, CardFooter, CardHeader, CardProvider, Checkbox, Tooltip } from "@nextui-org/react"
+import { Button, Card, CardBody, CardFooter, CardHeader, CardProvider, Checkbox, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Tooltip } from "@nextui-org/react"
 import Link from "next/link"
 import toast from "react-hot-toast"
-import { updateTodo } from "@/database";
+import { getDoneTodos, getFavoriteTodos, updateTodo } from "@/database";
 import { Empty } from '@/components/empty'
 import { StoredContext } from "@/context";
 
@@ -9,7 +9,7 @@ export const TodoCard = ({ todo }) => {
     const { memory: { todos }, setStored } = StoredContext()
     const handleCheck = async () => {
         toast.promise(updateTodo(todo.id, { done: !todo.done }, 'todos'), {
-            loading: 'Actualizando tarea...',
+            loading: `${todo.done ? 'Desmarcando' : 'Marcando'} tarea...`,
             success: ({ error }) => {
                 if (error) {
                     return 'Error al al actualizar la tarea 😢'
@@ -22,14 +22,14 @@ export const TodoCard = ({ todo }) => {
                         return t
                     })
                 })
-                return 'Tarea actualizada'
+                return `Tarea ${todo.done ? 'desmarcada' : 'marcada'}`
             },
             error: 'No se pudo actualizar la tarea 😢',
         }, { duration: 3000, id: 'update-todo' })
     }
     const handleImportant = async () => {
         toast.promise(updateTodo(todo.id, { important: !todo.important }, 'todos'), {
-            loading: 'Cambiando importancia...',
+            loading: `${todo.important ? 'Quitando de favoritos' : 'Añadiendo a favoritos'}`,
             success: ({ error }) => {
                 if (error) {
                     return 'Error al al actualizar la tarea 😢'
@@ -42,7 +42,7 @@ export const TodoCard = ({ todo }) => {
                         return t
                     })
                 })
-                return 'Importancia cambiada'
+                return `${todo.important ? 'Quitado de favoritos' : 'Añadido a favoritos'}`
             },
             error: 'No se pudo cambiar la importancia 😢',
         }, { duration: 3000, id: 'update-todo' })
