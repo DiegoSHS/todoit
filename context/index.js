@@ -1,10 +1,11 @@
 'use client'
-import { useContext, createContext, useState } from "react"
+import { useContext, createContext, useState, useEffect } from "react"
 
 export const defaultTodo = {
     title: "",
     description: "",
     done: false,
+    important: false,
 }
 
 export const Context = createContext()

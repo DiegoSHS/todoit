@@ -22,7 +22,7 @@ export const getTodos = async (table, supabase = client) => {
 }
 
 export const insertTodo = async (todo, table, supabase = client) => {
-    return supabase.from(table).insert(todo)
+    return supabase.from(table).insert(todo).select()
 }
 
 export const updateTodo = async (id, todo, table, supabase = client) => {
@@ -59,4 +59,7 @@ export const getTodosByTextSearch = async (table, text, supabase = client) => {
         }
     }
     return { data }
+}
+export const getTodoById = async (id, table, supabase = client) => {
+    return supabase.from(table).select().match({ id })
 }

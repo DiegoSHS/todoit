@@ -1,4 +1,4 @@
-import { Button, Card, CardBody, CardHeader, Checkbox } from "@nextui-org/react"
+import { Button, Card, CardBody, CardFooter, CardHeader, CardProvider, Checkbox, Tooltip } from "@nextui-org/react"
 import Link from "next/link"
 import toast from "react-hot-toast"
 import { updateTodo } from "@/database";
@@ -27,23 +27,54 @@ export const TodoCard = ({ todo }) => {
             error: 'No se pudo actualizar la tarea 😢',
         }, { duration: 3000, id: 'update-todo' })
     }
+    const handleImportant = async () => {
+        toast.promise(updateTodo(todo.id, { important: !todo.important }, 'todos'), {
+            loading: 'Cambiando importancia...',
+            success: ({ error }) => {
+                if (error) {
+                    return 'Error al al actualizar la tarea 😢'
+                }
+                setStored({
+                    todos: todos.map((t) => {
+                        if (t.id === todo.id) {
+                            return { ...t, important: !t.important }
+                        }
+                        return t
+                    })
+                })
+                return 'Importancia cambiada'
+            },
+            error: 'No se pudo cambiar la importancia 😢',
+        }, { duration: 3000, id: 'update-todo' })
+    }
     return (
-        <Card>
-            <CardHeader>{todo.title}</CardHeader>
-            <CardBody>{todo.description}</CardBody>
-            <Checkbox className="z-50 top-2 right-0 absolute float-right" checked={!todo.done} onClick={handleCheck} radius="full" />
-            <Link href={`/todo/${todo.id}`} passHref legacyBehavior>
-                <Button>Editar <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125" />
-                </svg>
-                </Button>
-            </Link>
-        </Card>
+        <Link href={`/todo/${todo.id}`} passHref legacyBehavior>
+            <Card isBlurred isPressable shadow="sm" className="bg-background/60 dark:bg-default-100/50">
+                <CardHeader>{todo.title}</CardHeader>
+                <CardBody className="flex flex-row">{todo.description}</CardBody>
+                <CardFooter>
+                    <div className="flex">
+                        <Tooltip content={todo.done ? 'Terminado' : 'Pendiente'}>
+                            <div>
+                                <Checkbox isSelected={todo.done} onClick={handleCheck} radius="full" />
+                            </div>
+                        </Tooltip>
+                        <Tooltip content={todo.important ? 'Favorito' : 'No favorito'}>
+                            <div>
+                                <Checkbox isSelected={todo.important} color="danger" icon={<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" />
+                                </svg>} onClick={handleImportant} radius="full" />
+                            </div>
+                        </Tooltip>
+                    </div>
+                </CardFooter>
+            </Card>
+        </Link>
     )
 }
 
 export const TodoList = ({ todos }) => {
     return (
-        todos.length === 0 ? <Empty /> : todos.map((t) => <TodoCard key={t.id} todo={t}></TodoCard>)
+        todos.length === 0 ? <Empty /> : <div className="grid gap-2 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">{todos.map((t) => <TodoCard key={t.id} todo={t}></TodoCard>)}</div>
     )
 }
