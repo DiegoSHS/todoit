@@ -29,12 +29,8 @@ export const updateTodo = async (id, todo, table, supabase = client) => {
     return supabase.from(table).update(todo).match({ id })
 }
 
-export const getDoneTodos = async (table, done, supabase = client) => {
-    return supabase.from(table).select('*').eq('done', done)
-}
-
-export const getFavoriteTodos = async (table, important, supabase = client) => {
-    return supabase.from(table).select('*').eq('important', important)
+export const getFilteredTodos = async (table, filter, supabase = client) => {
+    return supabase.from(table).select().match(filter)
 }
 
 export const getTodosByTextSearch = async (table, text, supabase = client) => {
