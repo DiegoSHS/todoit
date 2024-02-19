@@ -1,7 +1,7 @@
-import { Button, Card, CardBody, CardFooter, CardHeader, CardProvider, Checkbox, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Tooltip } from "@nextui-org/react"
+import { Card, CardBody, CardFooter, CardHeader, Checkbox, Tooltip } from "@nextui-org/react"
 import Link from "next/link"
 import toast from "react-hot-toast"
-import { getDoneTodos, getFavoriteTodos, updateTodo } from "@/database";
+import { updateTodo } from "@/database";
 import { Empty } from '@/components/empty'
 import { StoredContext } from "@/context";
 
