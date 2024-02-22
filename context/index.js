@@ -6,6 +6,7 @@ export const defaultTodo = {
     description: "",
     done: false,
     important: false,
+    date_limit: ""
 }
 
 export const Context = createContext()

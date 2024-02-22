@@ -1,4 +1,4 @@
-import { Card, CardBody, CardFooter, CardHeader, Checkbox, Tooltip } from "@nextui-org/react"
+import { Card, CardBody, CardFooter, CardHeader, Checkbox, Chip, Tooltip } from "@nextui-org/react"
 import Link from "next/link"
 import toast from "react-hot-toast"
 import { updateTodo } from "@/database";
@@ -53,7 +53,7 @@ export const TodoCard = ({ todo }) => {
                 <CardHeader>{todo.title}</CardHeader>
                 <CardBody className="flex flex-row">{todo.description}</CardBody>
                 <CardFooter>
-                    <div className="flex">
+                    <div className="flex items-center justify-center">
                         <Tooltip content={todo.done ? 'Terminado' : 'Pendiente'}>
                             <div>
                                 <Checkbox isSelected={todo.done} onClick={handleCheck} radius="full" />
@@ -66,6 +66,7 @@ export const TodoCard = ({ todo }) => {
                                 </svg>} onClick={handleImportant} radius="full" />
                             </div>
                         </Tooltip>
+                        <Chip color="primary" size="sm">{new Date(todo.date_limit).toLocaleDateString()}</Chip>
                     </div>
                 </CardFooter>
             </Card>

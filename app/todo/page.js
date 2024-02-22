@@ -1,6 +1,5 @@
 'use client'
 
-import { Heart } from "@/components/todo"
 import { StoredContext, defaultTodo } from "@/context"
 import { getTodoById, getTodos, insertTodo, updateTodo } from "@/database"
 import { Button, Checkbox, Input, Textarea } from "@nextui-org/react"
@@ -13,6 +12,7 @@ export default function TodoForm({ params }) {
     const handleChange = (e) => {
         const { name, value } = e.target
         setStored({ newTodo: { ...newTodo, [name]: value } })
+        console.log(newTodo)
     }
     const handleSubmit = (e) => {
         e.preventDefault()
@@ -68,6 +68,7 @@ export default function TodoForm({ params }) {
         <form className="flex flex-col gap-2 mt-5 pt-5" onChange={handleChange} onSubmit={handleSubmit}>
             <Input type="text" isDisabled={loading} isRequired label='Título' name="title" placeholder="Mi tarea" value={newTodo.title} />
             <Textarea type="text" isDisabled={loading} isRequired label='Descripción' name="description" placeholder="Detalles de mi tarea" value={newTodo.description} />
+            <Input type="date" name="date_limit" onChange={handleChange} value={newTodo.date_limit}></Input>
             <Checkbox radius="full" isDisabled={params.id == undefined || loading} onClick={() => { setStored({ newTodo: { ...newTodo, done: !newTodo.done } }) }} name="done" isSelected={newTodo.done}>Completado</Checkbox>
             <Checkbox radius="full" isDisabled={loading} color="danger" icon={
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
