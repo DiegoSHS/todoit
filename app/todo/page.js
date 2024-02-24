@@ -5,17 +5,22 @@ import { getTodoById, getTodos, insertTodo, updateTodo } from "@/database"
 import { Button, Checkbox, Input, Textarea } from "@nextui-org/react"
 import { useEffect, useState } from "react"
 import toast from "react-hot-toast"
+import { validateTodo } from "@/validations"
 
 export default function TodoForm({ params }) {
     const [loading, setLoading] = useState(false)
-    const { memory: { newTodo, todos }, setStored } = StoredContext()
+    const [errors, setErrors] = useState({})
+    const { memory: { newTodo, todos, validForm }, setStored } = StoredContext()
     const handleChange = (e) => {
         const { name, value } = e.target
-        setStored({ newTodo: { ...newTodo, [name]: value } })
-        console.log(newTodo)
+        setStored({ newTodo: { ...newTodo, [name]: value }, validForm: Object.entries(errors).length === 0 })
+        setErrors(validateTodo(newTodo))
     }
     const handleSubmit = (e) => {
         e.preventDefault()
+        if(!validForm){
+            return
+        }
         setLoading(true)
         if (params.id == undefined) {
             toast.promise(insertTodo(newTodo, 'todos'), {
@@ -66,9 +71,9 @@ export default function TodoForm({ params }) {
     }, [params.id])
     return (
         <form className="flex flex-col gap-2 mt-5 pt-5" onChange={handleChange} onSubmit={handleSubmit}>
-            <Input type="text" isDisabled={loading} isRequired label='Título' name="title" placeholder="Mi tarea" value={newTodo.title} />
-            <Textarea type="text" isDisabled={loading} isRequired label='Descripción' name="description" placeholder="Detalles de mi tarea" value={newTodo.description} />
-            <Input type="date" name="date_limit" onChange={handleChange} value={newTodo.date_limit}></Input>
+            <Input isInvalid={errors.title} errorMessage={errors.title} type="text" isDisabled={loading} isRequired label='Título' name="title" placeholder="Mi tarea" value={newTodo.title} />
+            <Textarea isInvalid={errors.description} errorMessage={errors.description} type="text" isDisabled={loading} isRequired label='Descripción' name="description" placeholder="Detalles de mi tarea" value={newTodo.description} />
+            <Input isInvalid={errors.date_limit} errorMessage={errors.date_limit} type="date" name="date_limit" onChange={handleChange} value={newTodo.date_limit}></Input>
             <Checkbox radius="full" isDisabled={params.id == undefined || loading} onClick={() => { setStored({ newTodo: { ...newTodo, done: !newTodo.done } }) }} name="done" isSelected={newTodo.done}>Completado</Checkbox>
             <Checkbox radius="full" isDisabled={loading} color="danger" icon={
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
