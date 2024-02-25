@@ -18,7 +18,7 @@ export default function TodoForm({ params }) {
     }
     const handleSubmit = (e) => {
         e.preventDefault()
-        if(!validForm){
+        if (!validForm) {
             return
         }
         setLoading(true)
@@ -46,9 +46,7 @@ export default function TodoForm({ params }) {
                     return 'Error al al actualizar la tarea 😢'
                 }
                 const { data: todos } = await getTodos('todos')
-                setStored({
-                    todos
-                })
+                setStored({ todos })
                 return 'Tarea actualizada'
             },
             error: 'No se pudo actualizar la tarea 😢',

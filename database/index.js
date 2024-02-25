@@ -1,6 +1,6 @@
 'use server'
-import { createClient } from "@/utils/supabase/server";
-import { cookies } from "next/headers";
+import { createClient } from "@/utils/supabase/server"
+import { cookies } from "next/headers"
 
 const cookieStore = cookies()
 const client = createClient(cookieStore)
@@ -10,7 +10,7 @@ export const deleteTodo = async (id, table, supabase = client) => {
     if (count === 0) {
         return {
             error: {
-                message: 'No se pudo eliminar la tarea'
+                message: 'No se pudo eliminar la tarea, no existe o ya fue eliminada'
             }
         }
     }
@@ -34,7 +34,7 @@ export const getFilteredTodos = async (table, filter, supabase = client) => {
 }
 
 export const getTodosByTextSearch = async (table, text, supabase = client) => {
-    const { data, error } = Promise.allSettled([
+    return Promise.allSettled([
         supabase.from(table).select('*').textSearch('title', text),
         supabase.from(table).select('*').textSearch('description', text)
     ]).then((results) => {
@@ -47,14 +47,6 @@ export const getTodosByTextSearch = async (table, text, supabase = client) => {
             }
         }
     })
-    if (error) {
-        return {
-            error: {
-                message: 'No se pudieron cargar las tareas'
-            }
-        }
-    }
-    return { data }
 }
 export const getTodoById = async (id, table, supabase = client) => {
     return supabase.from(table).select().match({ id })
