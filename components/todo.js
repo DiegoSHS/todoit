@@ -85,13 +85,13 @@ export const SliderTodo = ({ todos }) => {
     const settings = {
         infinite: true,
         speed: 500,
-        slidesToShow: 2,
+        slidesToShow: 1,
         fade: true,
         autoplay: true,
         centerMode: true
     }
     return (
-        <div className="items-center justify-center" style={{ width: 370 }}>
+        <div className="items-center justify-center mt-2" style={{ width: 370 }}>
             <Slider {...settings}>
                 {todos.map((t) => <TodoCard key={t.id} todo={t}></TodoCard>)}
             </Slider>

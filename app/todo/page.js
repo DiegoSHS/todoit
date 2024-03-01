@@ -26,6 +26,7 @@ export default function TodoForm({ params }) {
             toast.promise(insertTodo(newTodo, 'todos'), {
                 loading: 'Creando tarea...',
                 success: ({ error, data }) => {
+                    setLoading(false)
                     if (error) {
                         return 'Error al crear la tarea 😢'
                     }
@@ -42,6 +43,7 @@ export default function TodoForm({ params }) {
         toast.promise(updateTodo(params.id, newTodo, 'todos'), {
             loading: 'Actualizando tarea...',
             success: async ({ error }) => {
+                setLoading(false)
                 if (error) {
                     return 'Error al al actualizar la tarea 😢'
                 }
@@ -51,14 +53,24 @@ export default function TodoForm({ params }) {
             },
             error: 'No se pudo actualizar la tarea 😢',
         }, { duration: 3000, id: 'update-todo' })
-        setLoading(false)
     }
     const loadtodo = async (id) => {
-        const { data, error } = await getTodoById(id, 'todos')
-        if (error) {
-            return
-        }
-        setStored({ newTodo: data[0] })
+        setLoading(true)
+        toast.promise(getTodoById(id, 'todos'), {
+            loading: 'Cargando tarea...',
+            success: ({ data, error }) => {
+                setLoading(false)
+                if (error) {
+                    return 'No se pudo cargar la tarea'
+                }
+                setStored({ newTodo: data[0] })
+                return 'Tarea cargada'
+            },
+            error: 'Error al pedir la tarea'
+        }, {
+            duration: 3000,
+            id: 'load-todo'
+        })
     }
     useEffect(() => {
         if (params.id == undefined) {
@@ -71,7 +83,7 @@ export default function TodoForm({ params }) {
         <form className="flex flex-col gap-2 mt-5 pt-5" onChange={handleChange} onSubmit={handleSubmit}>
             <Input isInvalid={errors.title} errorMessage={errors.title} type="text" isDisabled={loading} isRequired label='Título' name="title" placeholder="Mi tarea" value={newTodo.title} />
             <Textarea isInvalid={errors.description} errorMessage={errors.description} type="text" isDisabled={loading} isRequired label='Descripción' name="description" placeholder="Detalles de mi tarea" value={newTodo.description} />
-            <Input isInvalid={errors.date_limit} errorMessage={errors.date_limit} type="date" name="date_limit" onChange={handleChange} value={newTodo.date_limit}></Input>
+            <Input isInvalid={errors.date_limit} errorMessage={errors.date_limit} type="date" isDisabled={loading} name="date_limit" onChange={handleChange} value={newTodo.date_limit}></Input>
             <Checkbox radius="full" isDisabled={params.id == undefined || loading} onClick={() => { setStored({ newTodo: { ...newTodo, done: !newTodo.done } }) }} name="done" isSelected={newTodo.done}>Completado</Checkbox>
             <Checkbox radius="full" isDisabled={loading} color="danger" icon={
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">

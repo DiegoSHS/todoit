@@ -1,9 +1,42 @@
 'use client'
-import { Button, Checkbox, Link, Navbar, NavbarBrand, NavbarContent, NavbarItem, Tooltip } from '@nextui-org/react'
+import { StoredContext } from '@/context'
+import { getFilteredTodos } from '@/database'
+import { Button, Checkbox, CheckboxGroup, CircularProgress, Link, Navbar, NavbarBrand, NavbarContent, NavbarItem, Tooltip } from '@nextui-org/react'
+import { useEffect, useState } from 'react'
+import toast from 'react-hot-toast'
+import { SliderTodo } from './todo'
 import { usePathname } from 'next/navigation'
 
 export const Navigation = () => {
     const path = usePathname()
+    const { setStored, memory: { todos } } = StoredContext()
+    const [filter, setFilter] = useState([])
+    const [loading, setLoading] = useState(false)
+    const loader = (promise) => {
+        setLoading(true)
+        promise.then(({ data, error }) => {
+            if (error) {
+                toast.error('No se pudieron obtener las tareas', {
+                    id: 'load-error',
+                    duration: 3000,
+                    icon: '❌'
+                })
+                setLoading(false)
+                return
+            }
+            setStored({ todos: data })
+            setLoading(false)
+        })
+    }
+    const handleFilter = () => {
+        const filters = filter.reduce((acc, curr) => {
+            return ({ ...acc, [curr]: true })
+        }, {})
+        loader(getFilteredTodos('todos', filters))
+    }
+    useEffect(() => {
+        handleFilter()
+    }, [filter])
     return (
         <Navbar>
             <NavbarBrand className="text-white">
@@ -34,6 +67,19 @@ export const Navigation = () => {
                 </NavbarItem>
             </NavbarContent>
             <NavbarContent justify='end'>
+                {path == '/' ? ('') : (
+                    <NavbarItem>
+                        <Tooltip closeDelay={5000} content={<div>
+                            <CheckboxGroup label='Filtro' orientation="horizontal" onValueChange={setFilter}>
+                                <Checkbox radius="full" value='important' color="danger">Favoritas</Checkbox>
+                                <Checkbox radius="full" value='done'>Completadas</Checkbox>
+                            </CheckboxGroup>
+                            {loading ? <CircularProgress size="md" className="mt-5" /> : <SliderTodo todos={todos}></SliderTodo>}
+                        </div>}>
+                            <Button variant='light' color='danger'>Tareas</Button>
+                        </Tooltip>
+                    </NavbarItem>
+                )}
                 <NavbarItem>
                     <Tooltip content={
                         <div className="px-1 py-2">
