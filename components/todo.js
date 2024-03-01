@@ -1,9 +1,10 @@
 import { Card, CardBody, CardFooter, CardHeader, Checkbox, Chip, Tooltip } from "@nextui-org/react"
 import Link from "next/link"
 import toast from "react-hot-toast"
-import { updateTodo } from "@/database";
+import { updateTodo } from "@/database"
 import { Empty } from '@/components/empty'
-import { StoredContext } from "@/context";
+import { StoredContext } from "@/context"
+import Slider from "react-slick"
 
 export const TodoCard = ({ todo }) => {
     const { memory: { todos }, setStored } = StoredContext()
@@ -49,7 +50,7 @@ export const TodoCard = ({ todo }) => {
     }
     return (
         <Link href={`/todo/${todo.id}`} passHref legacyBehavior>
-            <Card isBlurred isPressable shadow="sm" className="bg-background/60 dark:bg-default-100/50">
+            <Card isBlurred isPressable shadow="sm" className="bg-background/60 dark:bg-default-100/50 w-full">
                 <CardHeader>{todo.title}</CardHeader>
                 <CardBody className="flex flex-row">{todo.description}</CardBody>
                 <CardFooter>
@@ -77,5 +78,23 @@ export const TodoCard = ({ todo }) => {
 export const TodoList = ({ todos }) => {
     return (
         todos.length === 0 ? <Empty /> : <div className="grid gap-2 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">{todos.map((t) => <TodoCard key={t.id} todo={t}></TodoCard>)}</div>
+    )
+}
+
+export const SliderTodo = ({ todos }) => {
+    const settings = {
+        infinite: true,
+        speed: 500,
+        slidesToShow: 2,
+        fade: true,
+        autoplay: true,
+        centerMode: true
+    }
+    return (
+        <div className="items-center justify-center" style={{ width: 370 }}>
+            <Slider {...settings}>
+                {todos.map((t) => <TodoCard key={t.id} todo={t}></TodoCard>)}
+            </Slider>
+        </div>
     )
 }

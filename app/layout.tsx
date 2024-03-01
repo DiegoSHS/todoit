@@ -1,5 +1,7 @@
 import { GeistSans } from "geist/font/sans"
 import "./globals.css"
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 import { UIProvider } from "@/nextui"
 import { MemoryProvider } from "@/context"
 import Notify from '@/toast'

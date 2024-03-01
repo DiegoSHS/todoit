@@ -4,7 +4,7 @@ import { StoredContext } from "@/context"
 import { Checkbox, CheckboxGroup, CircularProgress, Divider } from "@nextui-org/react"
 import { useEffect, useState } from "react"
 import toast from "react-hot-toast"
-import { TodoList } from "@/components/todo"
+import { SliderTodo, TodoList } from "@/components/todo"
 import { getFilteredTodos, getTodos } from "@/database"
 export default function Index() {
     const [loading, setLoading] = useState(false)
@@ -43,6 +43,8 @@ export default function Index() {
     }, [filter])
     return (
         <div className="pt-5 mt-5 top-10 absolute flex flex-col items-center justify-center gap-2">
+            <p>Tareas pendientes más importantes</p>
+            <SliderTodo todos={todos.filter(e=>e.important && !e.done)}></SliderTodo>
             <CheckboxGroup label='Filtro' orientation="horizontal" onValueChange={setFilter}>
                 <Checkbox radius="full" value='important' color="danger">Favoritas</Checkbox>
                 <Checkbox radius="full" value='done'>Completadas</Checkbox>
