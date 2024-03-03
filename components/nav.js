@@ -69,13 +69,14 @@ export const Navigation = () => {
             <NavbarContent justify='end'>
                 {path == '/' ? ('') : (
                     <NavbarItem>
-                        <Tooltip closeDelay={5000} content={<div>
-                            <CheckboxGroup label='Filtro' orientation="horizontal" onValueChange={setFilter}>
-                                <Checkbox radius="full" value='important' color="danger">Favoritas</Checkbox>
-                                <Checkbox radius="full" value='done'>Completadas</Checkbox>
-                            </CheckboxGroup>
-                            {loading ? <CircularProgress size="md" className="mt-5" /> : <SliderTodo todos={todos}></SliderTodo>}
-                        </div>}>
+                        <Tooltip closeDelay={5000} content={
+                            <>
+                                <CheckboxGroup label='Filtro' orientation="horizontal" onValueChange={setFilter}>
+                                    <Checkbox radius="full" value='important' color="danger">Favoritas</Checkbox>
+                                    <Checkbox radius="full" value='done'>Completadas</Checkbox>
+                                </CheckboxGroup>
+                                {loading ? <CircularProgress size="md" className="mt-5" /> : <SliderTodo todos={todos}></SliderTodo>}
+                            </>}>
                             <Button variant='light' color='danger'>Tareas</Button>
                         </Tooltip>
                     </NavbarItem>
