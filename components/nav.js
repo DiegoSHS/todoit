@@ -3,7 +3,6 @@ import { StoredContext, createFilter, filterTodos } from '@/context'
 import { getFilteredTodos } from '@/database'
 import { Button, Checkbox, CheckboxGroup, CircularProgress, Link, Navbar, NavbarBrand, NavbarContent, NavbarItem, Tooltip } from '@nextui-org/react'
 import { useEffect, useState } from 'react'
-import toast from 'react-hot-toast'
 import { SliderTodo } from './todo'
 import { usePathname } from 'next/navigation'
 import { loader } from '@/loader'
@@ -70,8 +69,6 @@ export const Navigation = () => {
                     </NavbarItem>
                 )}
                 <NavbarItem>
-
-
                     <Tooltip content={
                         <Link href='/about' legacyBehavior passHref>
                             <div className="px-1 py-2 text-foreground">
