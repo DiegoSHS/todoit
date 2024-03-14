@@ -4,14 +4,15 @@ import { getFilteredTodos } from '@/database'
 import { Button, Checkbox, CheckboxGroup, CircularProgress, Link, Navbar, NavbarBrand, NavbarContent, NavbarItem, Tooltip } from '@nextui-org/react'
 import { useEffect, useState } from 'react'
 import { SliderTodo } from './todo'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import { loader } from '@/loader'
 import AuthButton from './AuthButton'
-import { getUser } from '@/database/auth'
+import { getSession } from '@/database/auth'
 
 export const Navigation = () => {
     const path = usePathname()
     const { setStored, memory: { todos, filters } } = StoredContext()
+    const router = useRouter()
     const [filter, setFilter] = useState([])
     const [loading, setLoading] = useState(false)
     const handleFilter = () => {
@@ -19,7 +20,8 @@ export const Navigation = () => {
         setStored({ filters })
     }
     const setupUser = async () => {
-        const session = await getUser()
+        const session = await getSession()
+        if (!session) router.push('/login')
         setStored({ session })
     }
     useEffect(() => {
@@ -33,7 +35,7 @@ export const Navigation = () => {
     }, [])
     return (
         <Navbar>
-            <NavbarBrand className="text-white">
+            <NavbarBrand className="">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="w-6 h-6">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 12h16.5m-16.5 3.75h16.5M3.75 19.5h16.5M5.625 4.5h12.75a1.875 1.875 0 0 1 0 3.75H5.625a1.875 1.875 0 0 1 0-3.75Z" />
                 </svg>
@@ -88,7 +90,7 @@ export const Navigation = () => {
                             </div>
                         </Link>
                     }>
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="w-6 h-6">
                             <path stroke-linecap="round" stroke-linejoin="round" d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z" />
                         </svg>
                     </Tooltip>

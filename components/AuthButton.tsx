@@ -1,25 +1,34 @@
 import { StoredContext } from "@/context";
-import { getUser, signOut } from "@/database/auth";
-import { createClient } from "@/utils/supabase/client";
+import { signOut } from "@/database/auth";
+import { Avatar, Button, Tooltip } from "@nextui-org/react";
 import Link from "next/link";
 
 export default function AuthButton() {
   const { memory: { session } } = StoredContext()
-  return session ? (
-    <div className="flex items-center gap-4">
-      Hey, {session.user.email}!
-      <form action={signOut}>
-        <button className="py-2 px-4 rounded-md no-underline bg-btn-background hover:bg-btn-background-hover">
-          Logout
-        </button>
-      </form>
-    </div>
-  ) : (
-    <Link
-      href="/login"
-      className="py-2 px-3 flex rounded-md no-underline bg-btn-background hover:bg-btn-background-hover"
-    >
-      Login
-    </Link>
-  );
+  return (
+    <Tooltip content={
+      session ? (
+        <div className="flex items-center gap-4">
+          Bienvenido, {session.user.email}!
+          <form action={signOut}>
+            <Button>
+              Cerrar sesión
+            </Button>
+          </form>
+        </div>
+      ) : (
+        <Link
+          href="/login"
+          passHref
+          legacyBehavior
+        >
+          <Button variant="flat" color="primary">
+            Iniciar sesión
+          </Button>
+        </Link>
+      )
+    }>
+      <Avatar color="success" name={session ? session.user.email : ''} />
+    </Tooltip >
+  )
 }

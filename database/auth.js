@@ -4,9 +4,10 @@ import { redirect } from "next/navigation";
 import { headers } from "next/headers"
 
 export const signOut = async () => {
-    const supabase = createClient();
-    await supabase.auth.signOut();
-    return redirect("/login");
+    const supabase = createClient()
+    const { error } = await supabase.auth.signOut()
+    if(error) return redirect("/login?message=No se pudo cerrar sesion")
+    return redirect("/login")
 }
 
 export const signIn = async (form) => {
@@ -35,10 +36,22 @@ export const signUp = async (form) => {
     return redirect("/login?message=Revisa tu correo para confirmar tu cuenta")
 }
 
-export const getUser = async () => {
+export const signInMagic = (form) => {
+    const supabase = createClient()
+    const email = form.get('email')
+    const origin = headers().get('origin')
+    supabase.auth.signInWithOtp({
+        email, options: {
+            shouldCreateUser: false,
+            emailRedirectTo: `${origin}/auth/callback`
+        }
+    })
+}
+
+export const getSession = async () => {
     const supabase = createClient();
     const {
-        data: { session },
+        data: { session }, error
     } = await supabase.auth.getSession()
     return session
 }
