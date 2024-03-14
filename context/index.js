@@ -17,6 +17,7 @@ export const MemoryProvider = ({ children }) => {
     const [memory, setMemory] = useState({
         filters: {},
         todos: [],
+        session: null,
         editing: false,
         creating: false,
         validForm: false,
