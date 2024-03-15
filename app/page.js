@@ -6,7 +6,18 @@ import { useEffect, useState } from "react"
 import { TodoList } from "@/components/todo"
 import { getTodos } from "@/database"
 import { loader } from "@/loader"
+import { useRouter } from "next/navigation"
+import { getSession } from "@/database/auth"
+
 export default function Index() {
+    const router = useRouter()
+    const handleSession = async () => {
+        const session = await getSession()
+        if (!session?.user) {
+            router.push('/login')
+        }
+    }
+    handleSession()
     const [loading, setLoading] = useState(false)
     const { memory: { todos, filters }, setStored } = StoredContext()
     const [filter, setFilter] = useState([])
@@ -25,6 +36,7 @@ export default function Index() {
     useEffect(() => {
         handleFilter()
     }, [filter])
+
     return (
         <div className="pt-5 mt-5 top-10 absolute flex flex-col items-center justify-center gap-2">
             <CheckboxGroup label='Filtro' orientation="horizontal" onValueChange={setFilter}>

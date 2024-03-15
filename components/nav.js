@@ -4,16 +4,16 @@ import { getFilteredTodos } from '@/database'
 import { Button, Checkbox, CheckboxGroup, CircularProgress, Link, Navbar, NavbarBrand, NavbarContent, NavbarItem, Tooltip } from '@nextui-org/react'
 import { useEffect, useState } from 'react'
 import { SliderTodo } from './todo'
-import { usePathname, useRouter } from 'next/navigation'
+import { usePathname } from 'next/navigation'
 import { loader } from '@/loader'
 import AuthButton from './AuthButton'
 import { getSession } from '@/database/auth'
 
 export const Navigation = () => {
     const path = usePathname()
-    const { setStored, memory: { todos, filters } } = StoredContext()
-    const router = useRouter()
+    const { setStored, memory: { todos, filters, session } } = StoredContext()
     const [filter, setFilter] = useState([])
+    const [open, setOpen] = useState(false)
     const [loading, setLoading] = useState(false)
     const handleFilter = () => {
         const filters = createFilter(filter)
@@ -21,7 +21,6 @@ export const Navigation = () => {
     }
     const setupUser = async () => {
         const session = await getSession()
-        if (!session) router.push('/login')
         setStored({ session })
     }
     useEffect(() => {
@@ -65,15 +64,20 @@ export const Navigation = () => {
             <NavbarContent justify='end'>
                 {path == '/' ? ('') : (
                     <NavbarItem>
-                        <Tooltip closeDelay={5000} content={
-                            <div>
-                                <CheckboxGroup label='Filtro' orientation="horizontal" onValueChange={setFilter}>
-                                    <Checkbox radius="full" value='important' color="danger">Favoritas</Checkbox>
-                                    <Checkbox radius="full" value='done'>Completadas</Checkbox>
-                                </CheckboxGroup>
-                                {loading ? <CircularProgress size="md" className="mt-5" /> : <SliderTodo todos={filterTodos(todos, filters)}></SliderTodo>}
-                            </div>}>
-                            <Button variant='light' color='danger'>Tareas</Button>
+                        <Tooltip closeDelay={session ? 500 : 5000} isOpen={open} onOpenChange={(open) => setOpen(open)} content={
+                            session ? (
+                                <div>
+                                    <CheckboxGroup label='Filtro' orientation="horizontal" onValueChange={setFilter}>
+                                        <Checkbox radius="full" value='important' color="danger">Favoritas</Checkbox>
+                                        <Checkbox radius="full" value='done'>Completadas</Checkbox>
+                                    </CheckboxGroup>
+                                    {loading ? <CircularProgress size="md" className="mt-5" /> : <SliderTodo todos={filterTodos(todos, filters)}></SliderTodo>}
+                                </div>
+                            ) : ('Para ver las tareas antes tiene que iniciar sesion')
+                        }>
+                            <Button variant='light' color='danger' onClick={()=>{
+                                setOpen((open) => !open)
+                            }}>Tareas</Button>
                         </Tooltip>
                     </NavbarItem>
                 )}

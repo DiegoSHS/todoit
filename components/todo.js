@@ -92,9 +92,13 @@ export const SliderTodo = ({ todos }) => {
     }
     return (
         <div className="items-center justify-center my-2" style={{ width: 370 }}>
-            <Slider {...settings}>
-                {todos.map((t) => <TodoCard key={t.id} todo={t}></TodoCard>)}
-            </Slider>
+            {
+                todos.length === 0 ? <Empty /> : (
+                    <Slider {...settings}>
+                        {todos.map((t) => <TodoCard key={t.id} todo={t}></TodoCard>)}
+                    </Slider>
+                )
+            }
         </div>
     )
 }
