@@ -8,12 +8,16 @@ import { getTodos } from "@/database"
 import { loader } from "@/loader"
 import { useRouter } from "next/navigation"
 import { getSession } from "@/database/auth"
+import toast from "react-hot-toast"
 
 export default function Index() {
     const router = useRouter()
     const handleSession = async () => {
         const session = await getSession()
         if (!session?.user) {
+            toast('Inicia sesión antes',{
+                duration: 3000, id: 'no-login'
+            })
             router.push('/login')
         }
     }

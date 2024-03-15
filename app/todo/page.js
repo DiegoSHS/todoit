@@ -6,8 +6,21 @@ import { Button, Checkbox, Input, Textarea } from "@nextui-org/react"
 import { useEffect, useState } from "react"
 import toast from "react-hot-toast"
 import { validateTodo } from "@/validations"
+import { useRouter } from "next/navigation"
+import { getSession } from "@/database/auth"
 
 export default function TodoForm({ params }) {
+    const router = useRouter()
+    const handleSession = async () => {
+        const session = await getSession()
+        if (!session?.user) {
+            toast('Inicia sesión antes', {
+                duration: 3000, id: 'no-login'
+            })
+            router.push('/login')
+        }
+    }
+    handleSession()
     const [loading, setLoading] = useState(false)
     const [errors, setErrors] = useState({})
     const { memory: { newTodo, todos, validForm }, setStored } = StoredContext()
