@@ -75,7 +75,7 @@ export const Navigation = () => {
                                 </div>
                             ) : ('Para ver las tareas antes tiene que iniciar sesion')
                         }>
-                            <Button variant='light' color='danger' onClick={()=>{
+                            <Button variant='light' color='danger' onClick={() => {
                                 setOpen((open) => !open)
                             }}>Tareas</Button>
                         </Tooltip>

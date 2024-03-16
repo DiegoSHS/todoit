@@ -73,7 +73,7 @@ export default function Login({ searchParams }) {
                 <Input isRequired name="email" type="email" label="Correo" isDisabled={loading} value={form.email} />
                 <Input isRequired name="password" type="password" label="Contraseña" isDisabled={loading} value={form.password} />
                 <Button type="submit" isLoading={loading} color="primary">{path == '/login' ? 'Iniciar sesion' : 'Registrar'}</Button>
-                <Divider className="my-1"/>
+                <Divider className="my-1" />
                 <Link href={path == '/login' ? '/signup' : '/login'} legacyBehavior passHref>
                     <Button>
                         {path == '/login' ? 'Registrarse' : 'Iniciar sesión'}
