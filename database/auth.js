@@ -1,22 +1,22 @@
 "use server";
 import { createClient } from "@/utils/supabase/server";
-import { redirect } from "next/navigation";
-import { headers } from "next/headers"
+import { cookies, headers } from "next/headers"
 
-export const signOut = async () => {
-    const supabase = createClient()
+
+const cookieStore = cookies()
+const client = createClient(cookieStore)
+
+export const signOut = async (supabase = client) => {
     return supabase.auth.signOut()
 }
 
-export const signIn = async (form) => {
+export const signIn = async (form, supabase = client) => {
     const { email, password } = form
-    const supabase = createClient()
     return supabase.auth.signInWithPassword({ email, password })
 }
-export const signUp = async (form) => {
+export const signUp = async (form, supabase = client) => {
     const origin = headers().get('origin')
-    const {password, email} = form
-    const supabase = createClient()
+    const { password, email } = form
     return supabase.auth.signUp({
         email, password, options: {
             emailRedirectTo: `${origin}/auth/callback`
@@ -24,9 +24,8 @@ export const signUp = async (form) => {
     })
 }
 
-export const signInMagic = (form) => {
-    const supabase = createClient()
-    const email = form.get('email')
+export const signInMagic = (form, supabase = client) => {
+    const { email } = form
     const origin = headers().get('origin')
     supabase.auth.signInWithOtp({
         email, options: {
@@ -36,8 +35,7 @@ export const signInMagic = (form) => {
     })
 }
 
-export const getSession = async () => {
-    const supabase = createClient();
+export const getSession = async (supabase = client) => {
     const {
         data: { session }, error
     } = await supabase.auth.getSession()

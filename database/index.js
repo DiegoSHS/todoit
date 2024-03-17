@@ -1,5 +1,6 @@
 'use server'
 import { createClient } from "@/utils/supabase/server"
+import { privateEncrypt } from "crypto"
 import { cookies } from "next/headers"
 
 const cookieStore = cookies()
@@ -18,15 +19,16 @@ export const deleteTodo = async (id, table, supabase = client) => {
 }
 
 export const getTodos = async (table, supabase = client) => {
-    return supabase.from(table).select('*')
+    const { data: { user: { id } } } = await supabase.auth.getUser()
+    return supabase.from(table).select('*').eq('user_id', id)
 }
 
 export const insertTodo = async (todo, table, supabase = client) => {
     return supabase.from(table).insert(todo).select()
 }
 
-export const updateTodo = async (id, todo, table, supabase = client) => {
-    return supabase.from(table).update(todo).match({ id })
+export const updateTodo = async (tid, todo, table, supabase = client) => {
+    return supabase.from(table).update(todo).match({ id: tid })
 }
 
 export const getFilteredTodos = async (table, filter, supabase = client) => {
@@ -34,9 +36,10 @@ export const getFilteredTodos = async (table, filter, supabase = client) => {
 }
 
 export const getTodosByTextSearch = async (table, text, supabase = client) => {
+    const { data: { user: { id } } } = await supabase.auth.getUser()
     return Promise.allSettled([
-        supabase.from(table).select('*').textSearch('title', text),
-        supabase.from(table).select('*').textSearch('description', text)
+        supabase.from(table).select('*').eq('user_id', id).textSearch('title', text),
+        supabase.from(table).select('*').eq('user_id', id).textSearch('description', text)
     ]).then((results) => {
         const data = results.map(({ value }) => value.data).flat()
         return { data }
@@ -48,6 +51,7 @@ export const getTodosByTextSearch = async (table, text, supabase = client) => {
         }
     })
 }
-export const getTodoById = async (id, table, supabase = client) => {
-    return supabase.from(table).select().match({ id })
+export const getTodoById = async (tid, table, supabase = client) => {
+    const { data: { user: { id } } } = await supabase.auth.getUser()
+    return supabase.from(table).select().eq('user_id', id).match({ id: tid })
 }

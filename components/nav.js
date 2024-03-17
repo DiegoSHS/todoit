@@ -1,52 +1,36 @@
 'use client'
-import { StoredContext, createFilter, filterTodos } from '@/context'
-import { getFilteredTodos } from '@/database'
-import { Button, Checkbox, CheckboxGroup, CircularProgress, Link, Navbar, NavbarBrand, NavbarContent, NavbarItem, Tooltip } from '@nextui-org/react'
-import { useEffect, useState } from 'react'
-import { SliderTodo } from './todo'
+import { StoredContext } from '@/context'
+import { Button, Checkbox, Link, Navbar, NavbarBrand, NavbarContent, NavbarItem, NavbarMenu, NavbarMenuItem, NavbarMenuToggle, Tooltip } from '@nextui-org/react'
+import { useEffect } from 'react'
 import { usePathname } from 'next/navigation'
-import { loader } from '@/loader'
 import AuthButton from './AuthButton'
 import { getSession } from '@/database/auth'
+import { ModalTodos, TooltipTodos } from './TooltipTodos'
 
 export const Navigation = () => {
     const path = usePathname()
-    const { setStored, memory: { todos, filters, session } } = StoredContext()
-    const [filter, setFilter] = useState([])
-    const [open, setOpen] = useState(false)
-    const [loading, setLoading] = useState(false)
-    const handleFilter = () => {
-        const filters = createFilter(filter)
-        setStored({ filters })
-    }
+    const { setStored, memory: { session } } = StoredContext()
     const setupUser = async () => {
-        const session = await getSession()
-        setStored({ session })
+        if (session) return
+        const sesion = await getSession()
+        setStored({ session: sesion })
     }
-    useEffect(() => {
-        handleFilter()
-    }, [filter])
     useEffect(() => {
         setupUser()
-        loader(getFilteredTodos('todos', filters), setLoading, (data) => {
-            setStored({ todos: data })
-        })
     }, [])
     return (
         <Navbar>
-            <NavbarBrand className="">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="w-6 h-6">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 12h16.5m-16.5 3.75h16.5M3.75 19.5h16.5M5.625 4.5h12.75a1.875 1.875 0 0 1 0 3.75H5.625a1.875 1.875 0 0 1 0-3.75Z" />
-                </svg>
-            </NavbarBrand>
-            <NavbarContent justify="center">
+            <NavbarContent>
+                <NavbarMenuToggle className='sm:hidden'></NavbarMenuToggle>
+            </NavbarContent>
+            <NavbarContent justify="center" className='hidden sm:flex gap-4'>
                 <NavbarItem>
                     <Link href="/" legacyBehavior passHref>
                         <Button variant="light" color='primary'>
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="w-6 h-6">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
                             </svg>
-                            Tareas
+                            Inicio
                         </Button>
                     </Link>
                 </NavbarItem>
@@ -60,31 +44,17 @@ export const Navigation = () => {
                         </Button>
                     </Link>
                 </NavbarItem>
-            </NavbarContent>
-            <NavbarContent justify='end'>
                 {path == '/' ? ('') : (
                     <NavbarItem>
-                        <Tooltip closeDelay={session ? 500 : 5000} isOpen={open} onOpenChange={(open) => setOpen(open)} content={
-                            session ? (
-                                <div>
-                                    <CheckboxGroup label='Filtro' orientation="horizontal" onValueChange={setFilter}>
-                                        <Checkbox radius="full" value='important' color="danger">Favoritas</Checkbox>
-                                        <Checkbox radius="full" value='done'>Completadas</Checkbox>
-                                    </CheckboxGroup>
-                                    {loading ? <CircularProgress size="md" className="mt-5" /> : <SliderTodo todos={filterTodos(todos, filters)}></SliderTodo>}
-                                </div>
-                            ) : ('Para ver las tareas antes tiene que iniciar sesion')
-                        }>
-                            <Button variant='light' color='danger' onClick={() => {
-                                setOpen((open) => !open)
-                            }}>Tareas</Button>
-                        </Tooltip>
+                        <TooltipTodos />
                     </NavbarItem>
                 )}
-                <NavbarItem>
+            </NavbarContent>
+            <NavbarContent justify='end'>
+                <NavbarItem className='hidden sm:flex'>
                     <Tooltip content={
                         <Link href='/about' legacyBehavior passHref>
-                            <div className="px-1 py-2 text-foreground">
+                            <div className="px-1 py-2 ">
                                 <div className="text-small font-bold">¿Como funciona?</div>
                                 <div className="text-tiny flex items-center gap-1">
                                     Toca una tarea para editarla, usa los checkboxes para marcarla<Checkbox isSelected radius='full' />o añadirla a favoritos<Checkbox color='danger' isSelected radius='full' icon={<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
@@ -99,10 +69,35 @@ export const Navigation = () => {
                         </svg>
                     </Tooltip>
                 </NavbarItem>
-                <NavbarItem>
+                <NavbarItem className='sm:hidden'>
+                    <AuthButton />
+                </NavbarItem>
+                <NavbarItem className='hidden sm:flex'>
                     <AuthButton />
                 </NavbarItem>
             </NavbarContent>
+            <NavbarMenu>
+                <NavbarMenuItem>
+                    <Link href="/" legacyBehavior passHref>
+                        <Button variant="light" color='primary'>
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="w-6 h-6">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
+                            </svg>
+                            Inicio
+                        </Button>
+                    </Link>
+                </NavbarMenuItem>
+                <NavbarMenuItem>
+                    <Link href="/todo" legacyBehavior passHref>
+                        <Button variant="light" color='primary'>
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="w-6 h-6">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                            </svg>
+                            Nueva tarea
+                        </Button>
+                    </Link>
+                </NavbarMenuItem>
+            </NavbarMenu>
         </Navbar>
     )
 }
