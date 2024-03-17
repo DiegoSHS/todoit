@@ -50,3 +50,20 @@ export const validateTodoTypes = (todo) => {
     }
     return { error }
 }
+
+export const validateLogin = (user) => {
+    const errors = {}
+    if (!user.email) {
+        errors.email = 'El email es requerido'
+    }
+    if (!user.password) {
+        errors.password = 'La contraseña es requerida'
+    }
+    if (user.email.length > 50 && user.email.length > 0) {
+        errors.email = 'El email no puede ser mayor a 50 caracteres y no puede estar vacío'
+    }
+    if (user.password.length > 50 && user.password.length > 6) {
+        errors.password = 'La contraseña tiene que tener una longitud de entre 6 y 50 caracteres'
+    }
+    return errors
+}

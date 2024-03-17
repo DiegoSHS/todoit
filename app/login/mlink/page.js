@@ -1,14 +1,23 @@
-import React from 'react'
-
-export default function Mlink({ searchParams }) {
+'use client'
+import { Button, Input } from "@nextui-org/react";
+import { signInMagic } from '@/database/auth'
+import { useState } from "react";
+export default function Mlink() {
+    const [form, setForm] = useState({ email: '', password: '' })
+    const handleChange = (e) => {
+        setForm((form) => ({ ...form, [e.target.name]: e.target.value }))
+    }
+    const handleSubmit = async (e) => {
+        e.preventDefault()
+        const { email } = form
+        const { error } = await signInMagic(email)
+    }
     return (
         <div>
-            <form>
-                <input type="text" name="email" placeholder="Correo" />
-                <input type="password" name="password" placeholder="Contraseña" />
-                <button type="submit" formAction={signIn}>Iniciar sesion</button>
-                <button type="submit" formAction={signUp}>Registrar</button>
-                {searchParams?.message && (<p className="mt-4 p-4 text-center">{searchParams.message}</p>)}
+            <form onChange={handleChange} onSubmit={handleSubmit}>
+                <Input label='email' name="email" type="email"></Input>
+                <Input label='password' name="password" type="password"></Input>
+                <Button>Aceptar</Button>
             </form>
         </div>
     )

@@ -1,52 +1,41 @@
 import { Card, CardBody, CardFooter, CardHeader, Checkbox, Chip, Tooltip } from "@nextui-org/react"
 import Link from "next/link"
-import toast from "react-hot-toast"
 import { updateTodo } from "@/database"
 import { Empty } from '@/components/empty'
 import { StoredContext } from "@/context"
 import Slider from "react-slick"
+import { toastHandler } from "@/handlers/todos"
 
 export const TodoCard = ({ todo }) => {
     const { memory: { todos }, setStored } = StoredContext()
     const handleCheck = async () => {
-        toast.promise(updateTodo(todo.id, { done: !todo.done }, 'todos'), {
-            loading: `${todo.done ? 'Desmarcando' : 'Marcando'} tarea...`,
-            success: ({ error }) => {
-                if (error) {
-                    return 'Error al al actualizar la tarea 😢'
-                }
-                setStored({
-                    todos: todos.map((t) => {
-                        if (t.id === todo.id) {
-                            return { ...t, done: !t.done }
-                        }
-                        return t
-                    })
+        toastHandler(updateTodo(todo.id, { done: !todo.done }), () => { }, ({ error }) => {
+            setStored({
+                todos: todos.map((t) => {
+                    if (t.id === todo.id) {
+                        return { ...t, done: !t.done }
+                    }
+                    return t
                 })
-                return `Tarea ${todo.done ? 'desmarcada' : 'marcada'}`
-            },
-            error: 'No se pudo actualizar la tarea 😢',
-        }, { duration: 3000, id: 'update-todo' })
+            })
+        }, {
+            loading: `${todo.done ? 'Desmarcando' : 'Marcando'} tarea...`,
+        })
     }
     const handleImportant = async () => {
-        toast.promise(updateTodo(todo.id, { important: !todo.important }, 'todos'), {
-            loading: `${todo.important ? 'Quitando de favoritos' : 'Añadiendo a favoritos'}`,
-            success: ({ error }) => {
-                if (error) {
-                    return 'Error al al actualizar la tarea 😢'
-                }
-                setStored({
-                    todos: todos.map((t) => {
-                        if (t.id === todo.id) {
-                            return { ...t, important: !t.important }
-                        }
-                        return t
-                    })
+        toastHandler(updateTodo(todo.id, { important: !todo.important }), () => { }, ({ error }) => {
+            setStored({
+                todos: todos.map((t) => {
+                    if (t.id === todo.id) {
+                        return { ...t, important: !t.important }
+                    }
+                    return t
                 })
-                return `${todo.important ? 'Quitado de favoritos' : 'Añadido a favoritos'}`
-            },
-            error: 'No se pudo cambiar la importancia 😢',
-        }, { duration: 3000, id: 'update-todo' })
+            })
+        }, {
+            loading: `${todo.important ? 'Quitando de favoritos' : 'Añadiendo a favoritos'}`,
+            success: 'Tarea actualizada',
+        })
     }
     return (
         <Link href={`/todo/${todo.id}`} passHref legacyBehavior>

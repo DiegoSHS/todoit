@@ -21,6 +21,7 @@ export const MemoryProvider = ({ children }) => {
         editing: false,
         creating: false,
         validForm: false,
+        errors: {},
         newTodo: defaultTodo,
     })
     const setStored = (prop) => setMemory((prev) => ({ ...prev, ...prop }))

@@ -1,91 +1,64 @@
 'use client'
 
 import { StoredContext, defaultTodo } from "@/context"
-import { getTodoById, getTodos, insertTodo, updateTodo } from "@/database"
+import { getTodoById, insertTodo, updateTodo } from "@/database"
 import { Button, Checkbox, Input, Textarea } from "@nextui-org/react"
 import { useEffect, useState } from "react"
 import toast from "react-hot-toast"
 import { validateTodo } from "@/validations"
 import { useRouter } from "next/navigation"
-import { getSession } from "@/database/auth"
+import { toastHandler } from "@/handlers/todos"
+import { loadSession } from "../../loader"
 
 export default function TodoForm({ params }) {
     const router = useRouter()
-    const handleSession = async () => {
-        const session = await getSession()
-        if (!session?.user) {
-            toast('Inicia sesión antes', {
-                duration: 3000, id: 'no-login'
-            })
-            router.push('/login')
-        }
-    }
-    handleSession()
     const [loading, setLoading] = useState(false)
-    const [errors, setErrors] = useState({})
-    const { memory: { newTodo, todos, validForm }, setStored } = StoredContext()
+    const { memory: { newTodo, todos, validForm, errors }, setStored } = StoredContext()
     const handleChange = (e) => {
         const { name, value } = e.target
-        setStored({ newTodo: { ...newTodo, [name]: value }, validForm: Object.entries(errors).length === 0 })
-        setErrors(validateTodo(newTodo))
+        setStored({
+            newTodo: { ...newTodo, [name]: value },
+            validForm: Object.entries(errors).length === 0,
+            errors: validateTodo(newTodo)
+        })
+    }
+    const handleCreate = () => {
+        toastHandler(insertTodo(newTodo), setLoading, ({ data }) => {
+            setStored({ todos: [...todos, ...data], newTodo: defaultTodo })
+        })
+    }
+    const handleUpdate = () => {
+        toastHandler(updateTodo(params.id, newTodo), setLoading, ({ data }) => {
+            setStored({ todos: [...todos, ...data] })
+        })
     }
     const handleSubmit = (e) => {
         e.preventDefault()
-        if (!validForm) {
-            return
+        if (validForm) {
+            setLoading(true)
+            if (params.id == undefined) {
+                handleCreate()
+                return
+            }
+            handleUpdate()
         }
-        setLoading(true)
-        if (params.id == undefined) {
-            toast.promise(insertTodo(newTodo, 'todos'), {
-                loading: 'Creando tarea...',
-                success: ({ error, data }) => {
-                    setLoading(false)
-                    if (error) {
-                        return 'Error al crear la tarea 😢'
-                    }
-                    setStored({ todos: [...todos, ...data], newTodo: defaultTodo })
-                    return 'Tarea creada'
-                },
-                error: 'No se pudo crear la tarea 😢',
-            }, {
-                duration: 3000, id: 'create-todo'
-            })
-            setLoading(false)
-            return
-        }
-        toast.promise(updateTodo(params.id, newTodo, 'todos'), {
-            loading: 'Actualizando tarea...',
-            success: async ({ error }) => {
-                setLoading(false)
-                if (error) {
-                    return 'Error al al actualizar la tarea 😢'
-                }
-                const { data: todos } = await getTodos('todos')
-                setStored({ todos })
-                return 'Tarea actualizada'
-            },
-            error: 'No se pudo actualizar la tarea 😢',
-        }, { duration: 3000, id: 'update-todo' })
     }
     const loadtodo = async (id) => {
-        setLoading(true)
-        toast.promise(getTodoById(id, 'todos'), {
-            loading: 'Cargando tarea...',
-            success: ({ data, error }) => {
-                setLoading(false)
-                if (error) {
-                    return 'No se pudo cargar la tarea'
-                }
-                setStored({ newTodo: data[0] })
-                return 'Tarea cargada'
-            },
-            error: 'Error al pedir la tarea'
+        toastHandler(getTodoById(id), setLoading, ({ data, error }) => {
+            if (data.length == 0) {
+                toast.error('No se encontró o no existe la tarea')
+                router.push('/todo')
+                return
+            }
+            setStored({ newTodo: data[0] })
         }, {
-            duration: 3000,
-            id: 'load-todo'
+            loading: 'Cargando tarea...',
+            success: 'Tarea cargada',
+            promiseError: 'Error al pedir la tarea'
         })
     }
     useEffect(() => {
+        loadSession(router)
         if (params.id == undefined) {
             setStored({ newTodo: defaultTodo })
             return
@@ -94,7 +67,7 @@ export default function TodoForm({ params }) {
     }, [params.id])
     return (
         <form className="flex flex-col gap-2 mt-5 pt-5" onChange={handleChange} onSubmit={handleSubmit}>
-            <Input isInvalid={errors.title} errorMessage={errors.title} type="text" isDisabled={loading} isRequired label='Título' name="title" placeholder="Mi tarea" value={newTodo.title} />
+            <Input isInvalid={errors.title} errorMessage={errors.title} type="text" isDisabled={loading} isRequired label='Título' name="title" value={newTodo.title} />
             <Textarea isInvalid={errors.description} errorMessage={errors.description} type="text" isDisabled={loading} isRequired label='Descripción' name="description" placeholder="Detalles de mi tarea" value={newTodo.description} />
             <Input isInvalid={errors.date_limit} errorMessage={errors.date_limit} type="date" isDisabled={loading} name="date_limit" onChange={handleChange} value={newTodo.date_limit}></Input>
             <Checkbox radius="full" isDisabled={params.id == undefined || loading} onClick={() => { setStored({ newTodo: { ...newTodo, done: !newTodo.done } }) }} name="done" isSelected={newTodo.done}>Completado</Checkbox>

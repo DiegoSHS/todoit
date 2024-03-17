@@ -37,7 +37,7 @@ export const signInMagic = (form, supabase = client) => {
 
 export const getSession = async (supabase = client) => {
     const {
-        data: { session }, error
+        data: { session }
     } = await supabase.auth.getSession()
     return session
 }

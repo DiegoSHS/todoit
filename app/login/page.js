@@ -1,13 +1,13 @@
 "use client"
 import { Button, Divider, Input } from "@nextui-org/react"
-import { getSession, signIn, signUp } from "@/database/auth"
-import { useEffect, useState } from "react"
-import toast from "react-hot-toast"
+import { signIn, signUp } from "@/database/auth"
+import { useState } from "react"
 import { StoredContext } from "@/context"
 import { usePathname } from "next/navigation"
 import Link from "next/link"
+import { toastHandler } from "@/handlers/todos"
 
-export default function Login({ searchParams }) {
+export default function Login({ }) {
     const { setStored } = StoredContext()
     const path = usePathname()
     const [form, setForm] = useState({
@@ -19,42 +19,22 @@ export default function Login({ searchParams }) {
         setForm((prev) => ({ ...prev, [target.name]: target.value }))
     }
     const handleSignIn = ({ target }) => {
-        toast.promise(signIn(form), {
-            loading: 'Iniciando sesion...',
-            success: async ({ error }) => {
-                setLoading(false)
-                const session = await getSession()
-                setStored({ session })
-                if (error) {
-                    return toast.error('No se pudo autenticar', { id: 'sign-in' })
-                }
-                setForm({ email: '', password: '' })
-                target.reset()
-                return 'Sesion iniciada'
-            },
-            error: 'No se pudo autenticar, intenta de nuevo'
+        toastHandler(signIn(form), setLoading, async ({ data: { session } }) => {
+            setStored({ session })
+            setForm({ email: '', password: '' })
+            target.reset()
         }, {
-            id: 'sign-in'
+            loading: 'Iniciando sesion...',
+            success: 'Bienvenido',
         })
     }
     const handleSignUp = ({ target }) => {
-        toast.promise(signUp(form), {
-            loading: 'Registrando...',
-            success: ({ error }) => {
-                setLoading(false)
-                if (error) {
-                    return 'No se pudo registrar'
-                }
-                setForm({ email: '', password: '' })
-                target.reset()
-                return 'Revisa tu correo para confirmar tu cuenta'
-            },
-            error: 'No se pudo registrar, intenta de nuevo'
+        toastHandler(signUp(form), setLoading, () => {
+            setForm({ email: '', password: '' })
+            target.reset()
         }, {
-            success: {
-                duration: 4000,
-                icon: false
-            }
+            loading: 'Registrando...',
+            success: 'Revisa tu correo para confirmar tu cuenta',
         })
     }
     const handleSubmit = (e) => {

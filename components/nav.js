@@ -1,11 +1,11 @@
 'use client'
 import { StoredContext } from '@/context'
-import { Button, Checkbox, Link, Navbar, NavbarBrand, NavbarContent, NavbarItem, NavbarMenu, NavbarMenuItem, NavbarMenuToggle, Tooltip } from '@nextui-org/react'
+import { Button, Checkbox, Link, Navbar, NavbarContent, NavbarItem, NavbarMenu, NavbarMenuItem, NavbarMenuToggle, Tooltip } from '@nextui-org/react'
 import { useEffect } from 'react'
 import { usePathname } from 'next/navigation'
 import AuthButton from './AuthButton'
 import { getSession } from '@/database/auth'
-import { ModalTodos, TooltipTodos } from './TooltipTodos'
+import { TooltipTodos } from './TooltipTodos'
 
 export const Navigation = () => {
     const path = usePathname()
@@ -73,7 +73,7 @@ export const Navigation = () => {
                     <AuthButton />
                 </NavbarItem>
                 <NavbarItem className='hidden sm:flex'>
-                    <AuthButton />
+                    <AuthButton modal/>
                 </NavbarItem>
             </NavbarContent>
             <NavbarMenu>

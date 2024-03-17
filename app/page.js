@@ -5,27 +5,15 @@ import { Checkbox, CheckboxGroup, CircularProgress, Divider } from "@nextui-org/
 import { useEffect, useState } from "react"
 import { TodoList } from "@/components/todo"
 import { getTodos } from "@/database"
-import { loader } from "@/loader"
+import { loader, loadSession } from "@/loader"
 import { useRouter } from "next/navigation"
-import { getSession } from "@/database/auth"
-import toast from "react-hot-toast"
 
 export default function Index() {
     const router = useRouter()
-    const handleSession = async () => {
-        const session = await getSession()
-        if (!session?.user) {
-            toast('Inicia sesión antes',{
-                duration: 3000, id: 'no-login'
-            })
-            router.push('/login')
-        }
-    }
-    handleSession()
     const [loading, setLoading] = useState(false)
     const { memory: { todos, filters }, setStored } = StoredContext()
     const [filter, setFilter] = useState([])
-    const setupTodos = async () => {
+    const setupTodos = () => {
         loader(getTodos('todos'), setLoading, (data) => {
             setStored({ todos: data })
         })
@@ -35,6 +23,7 @@ export default function Index() {
         setStored({ filters })
     }
     useEffect(() => {
+        loadSession(router)
         setupTodos()
     }, [])
     useEffect(() => {
