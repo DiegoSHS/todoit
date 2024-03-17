@@ -24,10 +24,9 @@ export const signUp = async (form, supabase = client) => {
     })
 }
 
-export const signInMagic = (form, supabase = client) => {
-    const { email } = form
+export const signInMagic = (email, supabase = client) => {
     const origin = headers().get('origin')
-    supabase.auth.signInWithOtp({
+    return supabase.auth.signInWithOtp({
         email, options: {
             shouldCreateUser: false,
             emailRedirectTo: `${origin}/auth/callback`

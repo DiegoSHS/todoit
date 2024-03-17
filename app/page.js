@@ -31,7 +31,7 @@ export default function Index() {
     }, [filter])
 
     return (
-        <div className="pt-5 mt-5 top-10 absolute flex flex-col items-center justify-center gap-2">
+        <div className="absolute flex flex-col items-center justify-center gap-2">
             <CheckboxGroup label='Filtro' orientation="horizontal" onValueChange={setFilter}>
                 <Checkbox radius="full" value='important' color="danger">Favoritas</Checkbox>
                 <Checkbox radius="full" value='done'>Completadas</Checkbox>

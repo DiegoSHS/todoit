@@ -24,7 +24,7 @@ export const TodoCard = ({ todo }) => {
             })
         }, {
             loading: `${todo.important ? 'Quitando de favoritos' : 'Añadiendo a favoritos'}`,
-            success: 'Tarea actualizada',
+            success: `${todo.important ? 'Quitado de favoritos' : 'Añadido a favoritos'}`,
         })
     }
     return (
@@ -70,7 +70,7 @@ export const SliderTodo = ({ todos }) => {
         centerMode: true
     }
     return (
-        <div className="items-center justify-center my-2" style={{ width: 370 }}>
+        <div className="items-center justify-center my-2 w-full" style={{ width: 370 }}>
             {
                 todos.length === 0 ? <Empty /> : (
                     <Slider {...settings}>

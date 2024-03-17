@@ -2,23 +2,26 @@
 import { Button, Input } from "@nextui-org/react";
 import { signInMagic } from '@/database/auth'
 import { useState } from "react";
+import { toastHandler } from "@/handlers/todos";
 export default function Mlink() {
-    const [form, setForm] = useState({ email: '', password: '' })
+    const [email, setEmail] = useState('')
+    const [loading, setLoading] = useState(false)
     const handleChange = (e) => {
-        setForm((form) => ({ ...form, [e.target.name]: e.target.value }))
+        setEmail(e.target.value)
     }
     const handleSubmit = async (e) => {
         e.preventDefault()
-        const { email } = form
-        const { error } = await signInMagic(email)
+        toastHandler(signInMagic(email),setLoading,(res)=>{
+            console.log(res)
+        },{
+            success: 'Se ha enviado un link mágico a tu correo',
+            error: 'Ha ocurrido un error, por favor intenta de nuevo'
+        })
     }
     return (
-        <div>
-            <form onChange={handleChange} onSubmit={handleSubmit}>
-                <Input label='email' name="email" type="email"></Input>
-                <Input label='password' name="password" type="password"></Input>
-                <Button>Aceptar</Button>
-            </form>
-        </div>
+        <form className="flex flex-col gap-2 w-1/3" onChange={handleChange} onSubmit={handleSubmit}>
+            <Input isRequired label='Correo' name="email" type="email"></Input>
+            <Button type="submit">Enviar link mágico</Button>
+        </form>
     )
 }

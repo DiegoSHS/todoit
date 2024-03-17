@@ -27,9 +27,11 @@ export default function RootLayout({
         <body className="dark bg-background text-foreground">
           <UIProvider>
             <Notify />
-            <main className="min-h-screen flex flex-col items-center">
+            <main className="min-h-screen">
               <Navigation />
-              {children}
+              <div className="flex flex-col items-center w-full mt-5 pt-5">
+                {children}
+              </div>
             </main>
           </UIProvider>
         </body>

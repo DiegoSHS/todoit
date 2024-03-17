@@ -48,7 +48,7 @@ export default function Login({ }) {
     }
 
     return (
-        <div className="pt-5 mt-5 top-10">
+        <div className="w-96">
             <form className="flex flex-col gap-2" onChange={handleChange} onSubmit={handleSubmit}>
                 <Input isRequired name="email" type="email" label="Correo" isDisabled={loading} value={form.email} />
                 <Input isRequired name="password" type="password" label="Contraseña" isDisabled={loading} value={form.password} />
@@ -57,6 +57,12 @@ export default function Login({ }) {
                 <Link href={path == '/login' ? '/signup' : '/login'} legacyBehavior passHref>
                     <Button>
                         {path == '/login' ? 'Registrarse' : 'Iniciar sesión'}
+                    </Button>
+                </Link>
+                <Divider></Divider>
+                <Link href={'/login/mlink'} legacyBehavior passHref>
+                    <Button variant="light" color="primary">
+                        Olvidé mi contraseña
                     </Button>
                 </Link>
             </form>
