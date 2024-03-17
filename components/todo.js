@@ -11,12 +11,7 @@ export const TodoCard = ({ todo }) => {
     const handleCheck = async () => {
         toastHandler(updateTodo(todo.id, { done: !todo.done }), () => { }, ({ error }) => {
             setStored({
-                todos: todos.map((t) => {
-                    if (t.id === todo.id) {
-                        return { ...t, done: !t.done }
-                    }
-                    return t
-                })
+                todos: todos.map((t) => t.id === todo.id ? { ...t, done: !t.done } : t)
             })
         }, {
             loading: `${todo.done ? 'Desmarcando' : 'Marcando'} tarea...`,
@@ -25,12 +20,7 @@ export const TodoCard = ({ todo }) => {
     const handleImportant = async () => {
         toastHandler(updateTodo(todo.id, { important: !todo.important }), () => { }, ({ error }) => {
             setStored({
-                todos: todos.map((t) => {
-                    if (t.id === todo.id) {
-                        return { ...t, important: !t.important }
-                    }
-                    return t
-                })
+                todos: todos.map((t) => t.id === todo.id ? { ...t, important: !t.important } : t)
             })
         }, {
             loading: `${todo.important ? 'Quitando de favoritos' : 'Añadiendo a favoritos'}`,
