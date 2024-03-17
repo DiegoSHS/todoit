@@ -23,7 +23,7 @@ export default function RootLayout({
 }) {
   return (
     <MemoryProvider>
-      <html lang="en" className={GeistSans.className}>
+      <html lang="es" className={GeistSans.className}>
         <body className="dark bg-background text-foreground">
           <UIProvider>
             <Notify />
