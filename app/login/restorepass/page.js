@@ -13,6 +13,7 @@ export default function Restore() {
         password: '',
         confirm: ''
     })
+    const [loading, setLoading] = useState(false)
     const handleChange = (e) => {
         setForm({
             ...form,
@@ -34,10 +35,10 @@ export default function Restore() {
     }
     return (
         <form className="flex flex-col gap-2 w-1/3" onChange={handleChange} onSubmit={handleSubmit}>
-            <Input type='email' label='Correo'></Input>
-            <Input type='password' label='Contraseña'></Input>
-            <Input type='password' label='Confirmar contraseña'></Input>
-            <Button type='submit'>Restaurar contraseña</Button>
+            <Input type='email' label='Correo' isDisabled={loading}></Input>
+            <Input type='password' label='Contraseña' isDisabled={loading}></Input>
+            <Input type='password' label='Confirmar contraseña' isDisabled={loading}></Input>
+            <Button type='submit' isLoading={loading}>Restaurar contraseña</Button>
         </form>
     )
 }
