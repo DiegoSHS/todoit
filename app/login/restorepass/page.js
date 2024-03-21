@@ -3,7 +3,7 @@ import React from 'react'
 import { toastHandler } from "@/handlers/todos";
 import { updatePass } from '@/database/auth'
 
-export const validatePass = (pass, confirm) => {
+const validatePass = (pass, confirm) => {
     return pass === confirm
 }
 
