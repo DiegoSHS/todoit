@@ -1,8 +1,11 @@
-'use client'
 import { Button, Input } from '@nextui-org/react'
 import { toastHandler } from "@/handlers/todos";
 import { updatePass } from '@/database/auth'
 import { useState } from 'react';
+
+const validatePass = (pass, confirm) => {
+    return pass === confirm
+}
 
 export default function Restore() {
     const [form, setForm] = useState({
