@@ -34,6 +34,17 @@ export const signInMagic = (email, supabase = client) => {
     })
 }
 
+export const restorePass = async (email, supabase = client) => {
+    const origin = headers().get('origin')
+    return supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${origin}/login/restorepass`
+    })
+}
+
+export const updatePass = async (newPassword, supabase = client) => {
+    return supabase.auth.updateUser({ password: newPassword })
+}
+
 export const getSession = async (supabase = client) => {
     const {
         data: { session }
