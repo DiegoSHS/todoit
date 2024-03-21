@@ -14,8 +14,10 @@ export default function Restore() {
         password: '',
         confirm: ''
     })
+    const [valid, setValid] = useState(false)
     const [loading, setLoading] = useState(false)
     const handleChange = (e) => {
+        setValid(validatePass(form.password, form.confirm))
         setForm({
             ...form,
             [e.target.name]: e.target.value
@@ -38,7 +40,7 @@ export default function Restore() {
         <form className="flex flex-col gap-2 w-1/3" onChange={handleChange} onSubmit={handleSubmit}>
             <Input type='email' label='Correo' isDisabled={loading}></Input>
             <Input type='password' label='Contraseña' isDisabled={loading}></Input>
-            <Input type='password' label='Confirmar contraseña' isDisabled={loading}></Input>
+            <Input type='password' label='Confirmar contraseña' isDisabled={loading} isInvalid={!valid} errorMessage={'Las contraseñas no coinciden'}></Input>
             <Button type='submit' isLoading={loading}>Restaurar contraseña</Button>
         </form>
     )
