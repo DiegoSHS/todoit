@@ -1,7 +1,21 @@
-import { type NextRequest } from "next/server";
+import { NextResponse, type NextRequest } from "next/server";
 import { updateSession } from "@/utils/supabase/middleware";
+import { createClient } from "./utils/supabase/server";
+
+const matchRoutes = [
+  "/",
+  "/restorepass",
+  "/todo"
+]
 
 export async function middleware(request: NextRequest) {
+  const supabase = createClient()
+  const { data: { session } } = await supabase.auth.getSession()
+  if (!session && matchRoutes.includes(request.nextUrl.pathname)) {
+    const url = request.nextUrl.clone()
+    url.pathname = "/login"
+    return NextResponse.redirect(url)
+  }
   return await updateSession(request);
 }
 
