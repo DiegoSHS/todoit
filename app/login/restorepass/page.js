@@ -1,3 +1,4 @@
+'use client'
 import { Button, Input } from '@nextui-org/react'
 import { toastHandler } from "@/handlers/todos";
 import { updatePass } from '@/database/auth'
