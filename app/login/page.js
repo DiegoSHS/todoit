@@ -6,22 +6,21 @@ import { StoredContext } from "@/context"
 import { usePathname } from "next/navigation"
 import Link from "next/link"
 import { toastHandler } from "@/handlers/todos"
+import { validateLogin } from "@/validations"
 
 export default function Login({ }) {
-    const { setStored } = StoredContext()
+    const { setStored, memory: { loginForm, errors } } = StoredContext()
     const path = usePathname()
-    const [form, setForm] = useState({
-        email: '',
-        password: ''
-    })
     const [loading, setLoading] = useState(false)
     const handleChange = ({ target }) => {
-        setForm((prev) => ({ ...prev, [target.name]: target.value }))
+        setStored({
+            loginForm: { ...loginForm, [target.name]: target.value },
+            errors: validateLogin(loginForm)
+        })
     }
     const handleSignIn = ({ target }) => {
         toastHandler(signIn(form), setLoading, async ({ data: { session } }) => {
-            setStored({ session })
-            setForm({ email: '', password: '' })
+            setStored({ session, loginForm: { email: '', password: '' } })
             target.reset()
         }, {
             loading: 'Iniciando sesion...',
@@ -30,7 +29,7 @@ export default function Login({ }) {
     }
     const handleSignUp = ({ target }) => {
         toastHandler(signUp(form), setLoading, () => {
-            setForm({ email: '', password: '' })
+            setStored({ loginForm: { email: '', password: '' } })
             target.reset()
         }, {
             loading: 'Registrando...',
@@ -50,8 +49,8 @@ export default function Login({ }) {
     return (
         <div className="w-96">
             <form className="flex flex-col gap-2" onChange={handleChange} onSubmit={handleSubmit}>
-                <Input isRequired name="email" type="email" label="Correo" isDisabled={loading} value={form.email} />
-                <Input isRequired name="password" type="password" label="Contraseña" isDisabled={loading} value={form.password} />
+                <Input isRequired name="email" type="email" label="Correo" isDisabled={loading} value={loginForm.email} errorMessage={errors.email}/>
+                <Input isRequired name="password" type="password" label="Contraseña" isDisabled={loading} value={loginForm.password} errorMessage={errors.password}/>
                 <Button type="submit" isLoading={loading} color="primary">{path == '/login' ? 'Iniciar sesion' : 'Registrar'}</Button>
                 <Divider className="my-1" />
                 <Link href={path == '/login' ? '/signup' : '/login'} legacyBehavior passHref>

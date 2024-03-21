@@ -23,6 +23,10 @@ export const MemoryProvider = ({ children }) => {
         validForm: false,
         errors: {},
         newTodo: defaultTodo,
+        loginForm: {
+            email: '',
+            password: ''
+        }
     })
     const setStored = (prop) => setMemory((prev) => ({ ...prev, ...prop }))
     const ctx = { memory, setStored, setMemory }
