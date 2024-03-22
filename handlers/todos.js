@@ -1,4 +1,3 @@
-import { CircularProgress } from "@nextui-org/react";
 import toast from "react-hot-toast";
 
 const defaultMessages = {
