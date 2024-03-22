@@ -59,7 +59,7 @@ export default function Login({ }) {
                     </Button>
                 </Link>
                 <Divider></Divider>
-                <Link href={'/login/mlink'} legacyBehavior passHref>
+                <Link href={'/mlink'} legacyBehavior passHref>
                     <Button variant="light" color="primary">
                         Olvidé mi contraseña
                     </Button>
