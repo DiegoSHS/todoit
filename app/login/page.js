@@ -19,7 +19,7 @@ export default function Login({ }) {
         })
     }
     const handleSignIn = ({ target }) => {
-        toastHandler(signIn(form), setLoading, async ({ data: { session } }) => {
+        toastHandler(signIn(loginForm), setLoading, async ({ data: { session } }) => {
             setStored({ session, loginForm: { email: '', password: '' } })
             target.reset()
         }, {
@@ -28,7 +28,7 @@ export default function Login({ }) {
         })
     }
     const handleSignUp = ({ target }) => {
-        toastHandler(signUp(form), setLoading, () => {
+        toastHandler(signUp(loginForm), setLoading, () => {
             setStored({ loginForm: { email: '', password: '' } })
             target.reset()
         }, {
