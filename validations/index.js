@@ -14,11 +14,11 @@ export const validateTodo = (todo) => {
     if (!todo.description) {
         errors.description = 'La descripción es requerida'
     }
-    if (todo.title.length > 50 || todo.title.length > 0) {
-        errors.title = 'El título no puede ser mayor a 50 caracteres y no puede estar vacío'
+    if (todo.title.length > 50) {
+        errors.title = 'El título no puede ser mayor a 50 caracteres'
     }
-    if (todo.description.length > 200 || todo.description.length > 0) {
-        errors.description = 'La descripción no puede ser mayor a 200 caracteres y no puede estar vacía'
+    if (todo.description.length > 200) {
+        errors.description = 'La descripción no puede ser mayor a 200 caracteres'
     }
     return errors
 }
@@ -59,7 +59,7 @@ export const validateLogin = (user) => {
     if (!user.password) {
         errors.password = 'La contraseña es requerida'
     }
-    if (user.email.length > 50 || user.email.length > 0) {
+    if (user.email.length > 50) {
         errors.email = 'El email no puede ser mayor a 50 caracteres y no puede estar vacío'
     }
     if (user.password.length > 50 || user.password.length < 6) {
