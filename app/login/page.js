@@ -14,7 +14,6 @@ export default function Login() {
     const path = usePathname()
     const handleSignIn = ({ target }) => {
         toastHandler(signIn(loginForm), setLoading, async ({ data: { session } }) => {
-            console.log(session)
             setStored({ session, loginForm: { email: '', password: '' } })
             target.reset()
         },{
