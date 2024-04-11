@@ -10,12 +10,7 @@ const matchRoutes = [
 
 export async function middleware(request: NextRequest) {
   const supabase = createClient()
-  const { data: { session } } = await supabase.auth.getSession()
-  if (!session && matchRoutes.includes(request.nextUrl.pathname)) {
-    const url = request.nextUrl.clone()
-    url.pathname = "/login"
-    return NextResponse.redirect(url)
-  }
+  
   return await updateSession(request);
 }
 export const config = {
