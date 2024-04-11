@@ -29,7 +29,6 @@ export default function Index() {
     useEffect(() => {
         handleFilter()
     }, [filter])
-
     return (
         <div className="absolute flex flex-col items-center justify-center gap-2">
             <CheckboxGroup label='Filtro' orientation="horizontal" onValueChange={setFilter}>

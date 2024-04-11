@@ -3,8 +3,8 @@ import Link from "next/link"
 import { updateTodo } from "@/database"
 import { Empty } from '@/components/empty'
 import { StoredContext } from "@/context"
-import Slider from "react-slick"
 import { toastHandler } from "@/handlers/todos"
+import Slider from "react-slick";
 
 export const TodoCard = ({ todo }) => {
     const { memory: { todos }, setStored } = StoredContext()
@@ -72,11 +72,9 @@ export const SliderTodo = ({ todos }) => {
     return (
         <div className="items-center justify-center my-2 w-full" style={{ width: 370 }}>
             {
-                todos.length === 0 ? <Empty /> : (
-                    <Slider {...settings}>
-                        {todos.map((t) => <TodoCard key={t.id} todo={t}></TodoCard>)}
-                    </Slider>
-                )
+                todos.length === 0 ? <Empty /> : <Slider {...settings}>
+                    {todos.map((t) => <TodoCard key={t.id} todo={t}></TodoCard>)}
+                </Slider>
             }
         </div>
     )
