@@ -18,6 +18,7 @@ export const toastHandler = (
         loading: messages.loading,
         success: async (result) => {
             setLoading(false)
+            console.log(result)
             if (result?.error) {
                 toast.error(messages.serverError, { id: 'server-error' })
                 toast.remove('handler')

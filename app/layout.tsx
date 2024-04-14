@@ -24,10 +24,10 @@ export default function RootLayout({
   return (
     <MemoryProvider>
       <html lang="es" className={GeistSans.className}>
-        <body className="dark bg-background text-foreground">
+        <body className="">
           <UIProvider>
             <Notify />
-            <main className="min-h-screen">
+            <main className="bg-background text-foreground min-h-screen">
               <Navigation />
               <div className="flex flex-col items-center w-full mt-5 pt-5">
                 {children}
