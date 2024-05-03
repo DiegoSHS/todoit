@@ -26,9 +26,14 @@ export default function AuthButton({ modal = false }) {
         session ? (
           <div className="flex items-center gap-4">
             Bienvenido, {session?.user?.email}!
-            <Button size="sm" onClick={handleOut}>
-              Cerrar sesión
-            </Button>
+            <div className="flex gap-2">
+              <Link href='/restorepassword' legacyBehavior passHref>
+                <Button size="sm">Cambiar contraseña</Button>
+              </Link>
+              <Button size="sm" onClick={handleOut}>
+                Cerrar sesión
+              </Button>
+            </div>
           </div>
         ) : (
           <Link
@@ -58,9 +63,14 @@ export default function AuthButton({ modal = false }) {
                       <ModalBody>
                         <div className="flex flex-col items-center gap-4">
                           Bienvenido, {session.user.email}!
-                          <Button size="sm" onClick={handleOut}>
-                            Cerrar sesión
-                          </Button>
+                          <div className="flex gap-2">
+                            <Link href='/restorepassword' legacyBehavior passHref>
+                              <Button size="sm">Cambiar contraseña</Button>
+                            </Link>
+                            <Button size="sm" onClick={handleOut}>
+                              Cerrar sesión
+                            </Button>
+                          </div>
                         </div>
                       </ModalBody>
                     </>
